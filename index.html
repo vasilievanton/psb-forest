@@ -26,20 +26,21 @@
           <div><b id="rBest">0</b><span>твой рекорд</span></div>
           <div><b id="rTime">0:00</b><span>время забега</span></div>
         </div>
-        <p class="ov-hint" id="ovHint"><span class="desk">Прыжок — пробел или ↑, в воздухе можно прыгнуть ещё раз. Ускорение — держи →.</span><span class="touch">Прыжок — кнопка слева или касание поля, в воздухе можно прыгнуть ещё раз. Ускорение — держи кнопку справа.</span></p>
+        <p class="ov-hint" id="ovHint"><span class="desk">Прыжок — пробел или ↑, в воздухе можно прыгнуть ещё раз. Ускорение — держи →.</span><span class="touch">Прыжок — касание поля или кнопка ↑, в воздухе можно прыгнуть ещё раз. Ускорение — держи кнопку ».</span></p>
         <button class="btn" id="bStart" type="button">Бежать!</button>
       </div>
     </div>
 
     <button class="snd" id="bSnd" type="button" aria-label="Звук"></button>
+    <button class="pau" id="bPause" type="button" aria-label="Пауза"></button>
     <div class="rot" id="rot">Поверни телефон горизонтально</div>
   </div>
 
   <div class="ctrl" id="ctrl">
-    <button class="cbtn" id="bJump" type="button">Прыжок</button>
-    <button class="cbtn" id="bFwd" type="button">Ускорение</button>
+    <button class="cbtn" id="bJump" type="button" aria-label="Прыжок">↑</button>
+    <button class="cbtn" id="bFwd" type="button" aria-label="Ускорение">»</button>
   </div>
-  <p class="keys">Пробел или ↑ — прыжок · → — ускорение</p>
+  <p class="keys">Пробел или ↑ — прыжок · → — ускорение · P — пауза</p>
 </main>
 
 <script src="assets/js/forest.js"></script>

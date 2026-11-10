@@ -8,10 +8,12 @@
   // высота поля: на компьютере — чтобы влезало в окно, на телефоне горизонтально — почти весь экран
   function fit(){
     var land=window.matchMedia&&matchMedia('(orientation:landscape) and (max-height:500px)').matches;
-    cv.dataset.vfit=land?'16':'';
-    cv.dataset.maxh=String(Math.max(300,Math.min(640,window.innerHeight-(land?16:230))));
+        var vh=(window.visualViewport&&visualViewport.height)||window.innerHeight;   // видимая высота: без панелей браузера
+    cv.dataset.vfit='';
+    cv.dataset.maxh=String(Math.max(land?160:300,Math.min(640,vh-(land?16:230))));
   }
   fit(); window.addEventListener('resize',fit);
+  if(window.visualViewport) visualViewport.addEventListener('resize',function(){fit();window.dispatchEvent(new Event('resize'));});
 
   function mmss(t){t=Math.round(t||0);return Math.floor(t/60)+':'+(t%60<10?'0':'')+(t%60);}
   function word(n){var m=n%10,h=n%100;if(m===1&&h!==11)return 'подарок';if(m>=2&&m<=4&&(h<12||h>14))return 'подарка';return 'подарков';}
@@ -22,7 +24,7 @@
       var rec=S.gifts>best;
       if(rec){best=S.gifts;try{localStorage.setItem(BEST_KEY,String(best));}catch(e){} ForestSound.play('record');}
       else if(S.out) ForestSound.play('over');
-      document.getElementById('ovT').textContent=rec?'Новый рекорд!':(S.out?'Жизни закончились':'Забег окончен');
+      document.getElementById('ovT').textContent=rec?'Новый рекорд!':(S.out?'Попытки закончились':'Забег окончен');
       document.getElementById('rGifts').textContent=S.gifts;
       document.querySelector('#rGifts+span').textContent=word(S.gifts);
       document.getElementById('rBest').textContent=best;
@@ -60,11 +62,20 @@
   bSnd.addEventListener('click',function(){ForestSound.set(!ForestSound.on);sndUi();});
   sndUi();
 
-  // ушли со вкладки — пауза; вернулись — продолжаем по кнопке
-  document.addEventListener('visibilitychange',function(){
-    if(document.hidden&&game.state.run&&!game.state.paused){game.pause();ForestSound.musicPause();
+  // пауза: кнопкой на поле, клавишей P или Esc, а также когда ушли со вкладки; продолжаем по кнопке
+  var bPause=document.getElementById('bPause');
+  function pauseNow(){
+    if(game.state.run&&!game.state.paused){game.pause();ForestSound.musicPause();
       document.getElementById('ovT').textContent='Пауза';document.getElementById('ovRes').classList.add('hidden');
       document.getElementById('ovHint').style.display='none';
       bStart.textContent='Продолжить';paused=true;ov.classList.remove('hidden');}
-  });
+  }
+  bPause.addEventListener('click',pauseNow);
+  document.addEventListener('keydown',function(e){if(e.code==='KeyP'||e.code==='Escape')pauseNow();});
+  document.addEventListener('visibilitychange',function(){if(document.hidden)pauseNow();});
+
+  // пока картинки не загрузились, забег не начинаем: иначе вместо Бориса мелькает заглушка
+  bStart.disabled=true; bStart.textContent='Загружаем…';
+  var ready=function(){bStart.disabled=false; if(bStart.textContent==='Загружаем…')bStart.textContent='Бежать!';};
+  loadForestArt().then(ready,ready);
 })();

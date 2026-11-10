@@ -21,7 +21,7 @@ const FOREST_BEAR_EXTRA=['idle','jump','fall','hit'];
 // Препятствия: h — высота в игре (поле — 400 единиц в высоту, медведь — около 110), ширина — по пропорциям PNG; w — ширина векторной заглушки.
 // stand — на препятствие можно приземлиться сверху и пробежать по нему (бревно, пень): где верх, на котором стоит медведь, — доля высоты картинки от ее верхнего края.
 // На сугроб встать нельзя — кристаллы, любое касание — удар. Новое препятствие — строка здесь и файл obstacle_<k>.png; пока файла нет, оно рисуется сугробом
-const FOREST_OBSTACLES=[{k:'log',h:34,w:72,stand:.25},{k:'stump',h:48,w:42,stand:.04},{k:'drift',h:30,w:76}];
+const FOREST_OBSTACLES=[{k:'log',h:34,w:72,stand:.25},{k:'stump',h:48,w:42,stand:.04},{k:'drift',h:38,w:96}];
 // Платформы: на них надо запрыгнуть и бежать поверху. Врезался в бок — минус жизнь, медведь всё равно забирается наверх.
 // h — высота площадки, по которой бежит медведь; img — во сколько раз картинка выше площадки (кристаллы и снег сверху); ширина — по пропорциям PNG (w — для векторной заглушки).
 // top — профиль верха в 24 точках слева направо, в долях h. Стоять можно там, где верх выше половины h; ниже — склон, в него медведь врезается.
@@ -306,7 +306,7 @@ function ForestGame(canvas, hooks){
   function hit(pit){
     if(S.inv>0||!S.run) return; S.stun=.6; S.inv=1.4; S.lives--; S.bk=1; S.hitAt=S.dist+PX;
     sfx(pit?'fall':'hit');
-    S.parts.push({k:'txt',x:PX+30,y:S.py-110,t:S.lives>0?'Ой! −1 жизнь':'Жизни кончились',life:1.1,c:'#ffb3a8'});
+    S.parts.push({k:'txt',x:PX+30,y:S.py-110,t:S.lives>0?'Ой! −1 попытка':'Попытки кончились',life:1.1,c:'#ffb3a8'});
     hud(S);
     if(S.lives<=0){S.run=false;S.done=true;S.out=true;setTimeout(()=>hooks.end(S),700);}
   }
@@ -373,7 +373,7 @@ function ForestGame(canvas, hooks){
         const cx=o.x+13, cy=o.y+12;
         if(cx>pr.x-14&&cx<pr.x+pr.w+14&&cy>pr.y-14&&cy<pr.y+pr.h+10){
           o.gone=1;
-          if(o.k==='life'){ if(S.lives<3)S.lives++; S.parts.push({k:'txt',x:cx-px-20,y:cy-20,t:'+1 жизнь',life:1.1,c:'#ffb8c8'}); sfx('heart'); }
+          if(o.k==='life'){ if(S.lives<3)S.lives++; S.parts.push({k:'txt',x:cx-px-20,y:cy-20,t:'+1 попытка',life:1.1,c:'#ffb8c8'}); sfx('heart'); }
           else { S.gifts++;S.score+=10; S.parts.push({k:'txt',x:cx-px,y:cy-20,t:'+1',life:.9,c:'#fde7a8'});
             giftN=S.t-giftT<GIFT_RUN?Math.min(giftN+1,GIFT_STEPS.length-1):0; giftT=S.t; sfx('gift',{rate:GIFT_STEPS[giftN]}); }
           hud(S);
@@ -510,7 +510,9 @@ function ForestGame(canvas, hooks){
   }
   function obstacle(o,sx){
     const y=GROUND-o.h, img=o.png&&F.ob[o.type];
-    if(img){ctx.drawImage(img,sx,y+OB_SINK,o.w,o.h);return;} // низ картинки чуть утоплен в снег
+    if(img){ if(o.type==='drift'){ // сугроб подкрашен в ледяной синий и обведен тенью: на белом снегу его видно издалека
+        if(!F.driftTint){const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const x=c.getContext('2d');x.drawImage(img,0,0);x.globalCompositeOperation='source-atop';x.fillStyle='rgba(40,96,214,.34)';x.fillRect(0,0,c.width,c.height);F.driftTint=c;}
+        ctx.save();ctx.shadowColor='rgba(6,16,64,1)';ctx.shadowBlur=10;ctx.shadowOffsetY=-2;ctx.drawImage(F.driftTint,sx,y+OB_SINK,o.w,o.h);ctx.restore();} else ctx.drawImage(img,sx,y+OB_SINK,o.w,o.h); return;} // низ картинки чуть утоплен в снег
     if(o.type==='log'){
       ctx.fillStyle='#6b3f22';ctx.beginPath();ctx.roundRect?ctx.roundRect(sx,y,o.w,o.h,14):ctx.rect(sx,y,o.w,o.h);ctx.fill();
       ctx.fillStyle='#8a5631';ctx.fillRect(sx+10,y+8,o.w-26,4);ctx.fillRect(sx+16,y+20,o.w-34,3);
