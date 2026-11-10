@@ -75,7 +75,9 @@
   document.addEventListener('visibilitychange',function(){if(document.hidden)pauseNow();});
 
   // пока картинки не загрузились, забег не начинаем: иначе вместо Бориса мелькает заглушка
-  bStart.disabled=true; bStart.textContent='Загружаем…';
-  var ready=function(){bStart.disabled=false; if(bStart.textContent==='Загружаем…')bStart.textContent='Бежать!';};
+  // и само поле до загрузки не показываем
+  var stage=document.getElementById('stage');
+  stage.classList.add('loading'); bStart.disabled=true; bStart.textContent='Загружаем…';
+  var ready=function(){stage.classList.remove('loading'); bStart.disabled=false; if(bStart.textContent==='Загружаем…')bStart.textContent='Бежать!';};
   loadForestArt().then(ready,ready);
 })();
