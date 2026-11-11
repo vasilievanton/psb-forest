@@ -8,7 +8,7 @@
   // высота поля: на компьютере — чтобы влезало в окно, на телефоне горизонтально — почти весь экран
   function fit(){
     var land=window.matchMedia&&matchMedia('(orientation:landscape) and (max-height:500px)').matches;
-        var vh=(window.visualViewport&&visualViewport.height)||window.innerHeight;   // видимая высота: без панелей браузера
+    var vh=(window.visualViewport&&visualViewport.height)||window.innerHeight;   // видимая высота: без панелей браузера
     cv.dataset.vfit='';
     cv.dataset.maxh=String(Math.max(land?160:300,Math.min(640,vh-(land?16:230))));
   }
