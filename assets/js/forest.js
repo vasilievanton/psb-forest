@@ -21,7 +21,7 @@ const FOREST_BEAR_EXTRA=['idle','jump','fall','hit'];
 // Препятствия: h — высота в игре (поле — 400 единиц в высоту, медведь — около 110), ширина — по пропорциям PNG; w — ширина векторной заглушки.
 // stand — на препятствие можно приземлиться сверху и пробежать по нему (бревно, пень): где верх, на котором стоит медведь, — доля высоты картинки от ее верхнего края.
 // На сугроб встать нельзя — кристаллы, любое касание — удар. Новое препятствие — строка здесь и файл obstacle_<k>.png; пока файла нет, оно рисуется сугробом
-const FOREST_OBSTACLES=[{k:'log',h:34,w:72,stand:.25},{k:'stump',h:48,w:42,stand:.04},{k:'drift',h:38,w:96}];
+const FOREST_OBSTACLES=[{k:'log',h:34,w:72,stand:.25},{k:'stump',h:48,w:42,stand:.04},{k:'drift',h:76,w:96}];
 // Платформы: на них надо запрыгнуть и бежать поверху. Врезался в бок — минус жизнь, медведь всё равно забирается наверх.
 // h — высота площадки, по которой бежит медведь; img — во сколько раз картинка выше площадки (кристаллы и снег сверху); ширина — по пропорциям PNG (w — для векторной заглушки).
 // top — профиль верха в 24 точках слева направо, в долях h. Стоять можно там, где верх выше половины h; ниже — склон, в него медведь врезается.
@@ -510,9 +510,8 @@ function ForestGame(canvas, hooks){
   }
   function obstacle(o,sx){
     const y=GROUND-o.h, img=o.png&&F.ob[o.type];
-    if(img){ if(o.type==='drift'){ // сугроб подкрашен в ледяной синий и обведен тенью: на белом снегу его видно издалека
-        if(!F.driftTint){const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const x=c.getContext('2d');x.drawImage(img,0,0);x.globalCompositeOperation='source-atop';x.fillStyle='rgba(40,96,214,.34)';x.fillRect(0,0,c.width,c.height);F.driftTint=c;}
-        ctx.save();ctx.shadowColor='rgba(6,16,64,1)';ctx.shadowBlur=10;ctx.shadowOffsetY=-2;ctx.drawImage(F.driftTint,sx,y+OB_SINK,o.w,o.h);ctx.restore();} else ctx.drawImage(img,sx,y+OB_SINK,o.w,o.h); return;} // низ картинки чуть утоплен в снег
+    if(img){ if(o.type==='drift'){ // сугроб сам по себе ледяной и яркий, тень по контуру отделяет его от белого снега
+        ctx.save();ctx.shadowColor='rgba(6,16,64,.85)';ctx.shadowBlur=10;ctx.shadowOffsetY=-2;ctx.drawImage(img,sx,y+OB_SINK,o.w,o.h);ctx.restore();} else ctx.drawImage(img,sx,y+OB_SINK,o.w,o.h); return;} // низ картинки чуть утоплен в снег
     if(o.type==='log'){
       ctx.fillStyle='#6b3f22';ctx.beginPath();ctx.roundRect?ctx.roundRect(sx,y,o.w,o.h,14):ctx.rect(sx,y,o.w,o.h);ctx.fill();
       ctx.fillStyle='#8a5631';ctx.fillRect(sx+10,y+8,o.w-26,4);ctx.fillRect(sx+16,y+20,o.w-34,3);
