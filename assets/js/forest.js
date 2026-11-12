@@ -3,7 +3,7 @@ function plural(n,a,b,c){n=Math.abs(n)%100;const k=n%10;if(n>10&&n<20)return c;i
 const A={m_star:'assets/img/m_star.webp'};
 const UI_FONT='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif';
 /* ===== Игра «Лес» ===== */
-// Медведь (Петр, старший сын), подарки и препятствия — PNG с прозрачным фоном из папки assets/img/forest/.
+// Медведь (Пётр, старший сын), подарки и препятствия — PNG с прозрачным фоном из папки assets/img/forest/.
 // Пока какого-то файла нет, на его месте рисуется прежняя векторная графика — игра работает и без картинок.
 //   bear_run_1.png … bear_run_6.png — кадры бега по кругу
 //   bear_idle.png, bear_jump.png, bear_fall.png, bear_hit.png — стойка до старта, прыжок вверх, падение, столкновение
