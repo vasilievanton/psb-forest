@@ -74,7 +74,7 @@
   document.addEventListener('keydown',function(e){if(e.code==='KeyP'||e.code==='Escape')pauseNow();});
   document.addEventListener('visibilitychange',function(){if(document.hidden)pauseNow();});
 
-  // пока картинки не загрузились, забег не начинаем: иначе вместо Петра мелькает заглушка
+  // пока картинки не загрузились, забег не начинаем: иначе вместо Бориса мелькает заглушка
   // и само поле до загрузки не показываем
   var stage=document.getElementById('stage');
   stage.classList.add('loading'); bStart.disabled=true; bStart.textContent='Загружаем…';
